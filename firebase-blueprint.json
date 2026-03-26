@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "photoURL": { "type": "string" },
+        "goal": { "type": "string", "enum": ["Loss", "Gain", "Maintain"] },
+        "age": { "type": "number" },
+        "weight": { "type": "number" },
+        "height": { "type": "number" },
+        "targetCalories": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "createdAt"]
+    },
+    "MealLog": {
+      "title": "MealLog",
+      "description": "A daily meal entry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner UID" },
+        "type": { "type": "string", "enum": ["Breakfast", "Lunch", "Dinner", "Snack"] },
+        "name": { "type": "string" },
+        "calories": { "type": "number" },
+        "date": { "type": "string", "description": "YYYY-MM-DD" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "name", "calories", "date", "createdAt"]
+    },
+    "WeightLog": {
+      "title": "WeightLog",
+      "description": "A daily weight entry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner UID" },
+        "weight": { "type": "number" },
+        "date": { "type": "string", "description": "YYYY-MM-DD" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "weight", "date", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles"
+    },
+    "/meals/{mealId}": {
+      "schema": { "$ref": "#/entities/MealLog" },
+      "description": "Meal logs"
+    },
+    "/weightLogs/{logId}": {
+      "schema": { "$ref": "#/entities/WeightLog" },
+      "description": "Weight logs"
+    }
+  }
+}
