@@ -27,22 +27,27 @@ export const Navigation: React.FC<NavigationProps> = ({ currentTab, setCurrentTa
   return (
     <>
       {/* Top App Bar */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-40 flex items-center justify-between px-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-700 dark:text-gray-200"
+      <header className="fixed top-0 left-0 right-0 z-40 pt-safe px-4 mt-4 pointer-events-none">
+        <div className="max-w-md mx-auto h-14 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-800/50 rounded-full shadow-sm flex items-center justify-between px-4 pointer-events-auto">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsOpen(true)}
+              className="p-2 -ml-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors text-gray-700 dark:text-gray-200"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Planners</h1>
+          </div>
+          <button 
+            onClick={() => handleNavClick('settings')}
+            className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden border border-gray-200/50 dark:border-gray-700/50 shadow-sm transition-transform hover:scale-105 active:scale-95"
           >
-            <Menu className="w-6 h-6" />
+            {profile?.photoURL ? (
+              <img src={profile.photoURL} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            ) : (
+              <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            )}
           </button>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Planners</h1>
-        </div>
-        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center overflow-hidden border-2 border-white dark:border-gray-800 shadow-sm">
-          {profile?.photoURL ? (
-            <img src={profile.photoURL} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-          ) : (
-            <User className="w-6 h-6 text-blue-600 dark:text-blue-300" />
-          )}
         </div>
       </header>
 

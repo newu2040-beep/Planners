@@ -108,7 +108,7 @@ service cloud.firestore {
              request.resource.data.createdAt is timestamp &&
              isValidOptionalString('displayName', 0, 100) &&
              isValidOptionalString('email', 0, 100) &&
-             isValidOptionalString('photoURL', 0, 500) &&
+             isValidOptionalString('photoURL', 0, 1048576) &&
              (!( 'goal' in request.resource.data ) || request.resource.data.goal in ['Loss', 'Gain', 'Maintain']) &&
              isValidOptionalNumber('age', 0, 150) &&
              isValidOptionalNumber('weight', 0, 1000) &&
