@@ -7,7 +7,7 @@ import { db } from '../firebase';
 import { MealLog } from '../types';
 
 export const Dashboard: React.FC = () => {
-  const { profile, updateProfileData } = useAuth();
+  const { profile, updateProfileData, isLocalGuest } = useAuth();
   const [meals, setMeals] = useState<MealLog[]>([]);
   const [waterIntake, setWaterIntake] = useState(0); // Mock water intake
   const [showAddMeal, setShowAddMeal] = useState(false);
@@ -20,7 +20,7 @@ export const Dashboard: React.FC = () => {
   const [currentWeight, setCurrentWeight] = useState(profile?.weight?.toString() || '');
 
   useEffect(() => {
-    if (!profile?.uid) return;
+    if (!profile?.uid || isLocalGuest) return;
     
     const today = new Date().toISOString().split('T')[0];
     const q = query(
@@ -35,7 +35,7 @@ export const Dashboard: React.FC = () => {
     });
 
     return () => unsubscribe();
-  }, [profile?.uid]);
+  }, [profile?.uid, isLocalGuest]);
 
   const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
   const targetCalories = profile?.targetCalories || 2000;
@@ -44,6 +44,23 @@ export const Dashboard: React.FC = () => {
   const handleAddMeal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile?.uid || !mealName || !mealCalories) return;
+
+    if (isLocalGuest) {
+      const newMeal = {
+        id: Date.now().toString(),
+        userId: profile.uid,
+        type: mealType,
+        name: mealName,
+        calories: Number(mealCalories),
+        date: new Date().toISOString().split('T')[0],
+        createdAt: new Date()
+      };
+      setMeals(prev => [...prev, newMeal as any]);
+      setShowAddMeal(false);
+      setMealName('');
+      setMealCalories('');
+      return;
+    }
 
     try {
       await addDoc(collection(db, 'meals'), {
@@ -66,8 +83,15 @@ export const Dashboard: React.FC = () => {
     e.preventDefault();
     if (!profile?.uid || !currentWeight) return;
 
+    const weightNum = Number(currentWeight);
+
+    if (isLocalGuest) {
+      await updateProfileData({ weight: weightNum });
+      setShowTrackWeight(false);
+      return;
+    }
+
     try {
-      const weightNum = Number(currentWeight);
       await addDoc(collection(db, 'weightLogs'), {
         userId: profile.uid,
         weight: weightNum,
